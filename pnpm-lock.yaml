@@ -17,6 +17,9 @@ dependencies:
   '@nuxt/test-utils':
     specifier: 3.17.2
     version: 3.17.2(@types/node@22.14.0)(typescript@5.8.2)
+  auth-utils:
+    specifier: ^1.0.0
+    version: 1.0.0
   dotenv:
     specifier: ^16.4.7
     version: 16.4.7
@@ -3127,6 +3130,10 @@ packages:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
     dev: true
+
+  /auth-utils@1.0.0:
+    resolution: {integrity: sha512-cwYLm0fsIz/I0vDYb792L33mpyE8qtK+58SisRfxQOd4RtDVzV+Xxug5iASs5h3txtcNOhd8rRzEQ+SgsAf6Hw==}
+    dev: false
 
   /autoprefixer@10.4.21(postcss@8.5.3):
     resolution: {integrity: sha512-O+A6LWV5LDHSJD3LjHYoNi4VLsj/Whi7k6zG12xTYaU4cQ8oxQGckXNX8cRHK5yOZ/ppVHe0ZBXGzSV9jXdVbQ==}
