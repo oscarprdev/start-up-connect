@@ -11,5 +11,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/test-utils',
     '@nuxtjs/tailwindcss',
+    'nuxt-auth-utils',
   ],
 });
