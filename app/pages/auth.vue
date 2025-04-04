@@ -37,6 +37,8 @@ const handleLogin = async () => {
     }),
   });
   console.log(response);
+
+  // TODO: Save the token to pinia store
 }
 
 const handleSignup = async () => {
