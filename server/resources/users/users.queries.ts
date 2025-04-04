@@ -1,19 +1,34 @@
-import { db } from '~/server/db';
-import { usersTable } from '~/server/db/schemas';
-import { eq } from 'drizzle-orm';
+import { eq, or } from 'drizzle-orm';
 import { z } from 'zod';
+import { db } from '~~/server/db';
+import { type User, usersTable } from '~~/server/db/schemas';
+
 const users = usersTable;
 
-const getUserByEmailSchema = z.object({
+interface UsersQueries {
+  getUserByEmailOrUsername: (input: GetUserByEmailOrUsernameInput) => Promise<User | null>;
+}
+
+export type GetUserByEmailOrUsernameInput = z.infer<typeof getUserByEmailOrUsernameSchema>;
+const getUserByEmailOrUsernameSchema = z.object({
   email: z.string().email(),
+  username: z.string(),
 });
 
-export const usersQueries = {
-  getUserByEmail: async (email: string) => {
-    const validated = getUserByEmailSchema.safeParse({ email });
-    if (!validated.success) throw new Error(validated.error.message);
+const getUserByEmailOrUsername = async (
+  input: GetUserByEmailOrUsernameInput
+): Promise<User | null> => {
+  const validated = getUserByEmailOrUsernameSchema.safeParse(input);
+  if (!validated.success) throw new Error(validated.error.message);
 
-    const user = await db.select().from(users).where(eq(users.email, validated.data.email));
-    return user;
-  },
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(or(eq(users.email, validated.data.email), eq(users.username, validated.data.username)));
+
+  return user || null;
+};
+
+export const usersQueries: UsersQueries = {
+  getUserByEmailOrUsername,
 };
