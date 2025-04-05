@@ -28,29 +28,42 @@ const handleSubmit = async () => {
   isLoading.value = false;
 }
 
+const supabase = useSupabaseClient();
+
 const handleLogin = async () => {
-  const response = await $fetch('/api/login', {
+  await $fetch('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify({
       email: formState.value.email,
       password: formState.value.password,
     }),
+    onResponse: async (response) => {
+      const session = response.response._data.session;
+      await supabase.auth.setSession({
+        access_token: session?.token,
+        refresh_token: session?.refreshToken,
+      });
+      navigateTo('/');
+    }
   });
-  console.log(response);
-
-  // TODO: Save the token to pinia store
 }
 
 const handleSignup = async () => {
-  const response = await $fetch('/api/signup', {
+  await $fetch('/api/auth/signup', {
     method: 'POST',
     body: JSON.stringify({
       email: formState.value.email,
       password: formState.value.password,
       username: formState.value.username,
     }),
+    onResponse: () => {
+      authMode.value = AUTH_UI_MODE.LOGIN;
+    }
   });
-  console.log(response);
+}
+
+const logout = async () => {
+  await supabase.auth.signOut();
 }
 
 </script>
@@ -58,22 +71,27 @@ const handleSignup = async () => {
   <div
     class="flex flex-col items-center justify-center h-screen"
   >
+    <button @click="logout">Logout</button>
     <form
       class="flex flex-col gap-4"
       @submit.prevent="handleSubmit"
     >
       <input
         v-if="authMode === AUTH_UI_MODE.SIGNUP"
+        v-model="formState.username"
         type="text"
         placeholder="Username"
         class="border-2 border-gray-300 rounded-md p-2"
+        
       />
       <input
+        v-model="formState.email"
         type="email"
         placeholder="Email"
         class="border-2 border-gray-300 rounded-md p-2"
       />
       <input
+        v-model="formState.password"
         type="password"
         placeholder="Password"
         class="border-2 border-gray-300 rounded-md p-2"
