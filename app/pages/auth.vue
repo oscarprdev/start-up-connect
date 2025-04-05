@@ -1,39 +1,56 @@
 <script setup lang="ts">
+import { Loader } from 'lucide-vue-next';
+import { z } from 'zod';
 import { ButtonSize, ButtonVariant } from '~/components/Button/button.types';
-import Input from '~/components/Input/input.vue';
+import Label from '~/components/Label/label.vue';
 import Button from '~/components/Button/button.vue';
+import Input from '~/components/Input/input.vue';
 
 enum AUTH_UI_MODE {
   LOGIN = 'login',
   SIGNUP = 'signup',
 }
 
-type FormState = {
-  email: string;
-  password: string;
-  username?: string;
-};
+type FormState = z.infer<typeof formStateSchema>;
 
-const supabase = useSupabaseClient();
-const { showToast } = useToast();
+const formStateSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'Email is required' })
+    .email({ message: 'Invalid email address' }),
+  password: z
+    .string()
+    .min(1, { message: 'Password is required' })
+    .min(6, { message: 'Password must be at least 6 characters' })
+    .max(16, { message: 'Password must be less than 16 characters' }),
+  username: z
+    .string()
+    .min(1, { message: 'Username is required' })
+    .min(3, { message: 'Username must be at least 3 characters' })
+    .max(16, { message: 'Username must be less than 16 characters' })
+    .optional(),
+});
 
-const authMode = ref<AUTH_UI_MODE>(AUTH_UI_MODE.LOGIN);
-const isLoading = ref(false);
-const formState = ref<FormState>({
+const defaultValues: FormState = {
   email: '',
   password: '',
   username: '',
-});
-
-const handleSubmit = async () => {
-  isLoading.value = true;
-  if (authMode.value === AUTH_UI_MODE.LOGIN) {
-    await handleLogin();
-  } else {
-    await handleSignup();
-  }
-  isLoading.value = false;
 };
+
+const authMode = ref<AUTH_UI_MODE>(AUTH_UI_MODE.LOGIN);
+const supabase = useSupabaseClient();
+const { showToast } = useToast();
+const { formState, isPending, errors, handleSubmit } = useForm<FormState>({
+  defaultValues,
+  schema: formStateSchema,
+  onSubmit: async () => {
+    if (authMode.value === AUTH_UI_MODE.LOGIN) {
+      await handleLogin();
+    } else {
+      await handleSignup();
+    }
+  },
+});
 
 const handleLogin = async () => {
   await $fetch('/api/auth/login', {
@@ -90,29 +107,41 @@ const logout = async () => {
     <form
       class="flex flex-col gap-4"
       @submit.prevent="handleSubmit">
-      <Input
+      <Label
         v-if="authMode === AUTH_UI_MODE.SIGNUP"
-        v-model="formState.username"
-        type="text"
-        placeholder="Username"
-        maxlength="16"
-        required />
-      <Input
-        v-model="formState.email"
-        type="email"
-        placeholder="Email"
-        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
-      <Input
-        v-model="formState.password"
-        type="password"
-        placeholder="Password"
-        minlength="6"
-        maxlength="16"
-        required />
+        label="Username"
+        html-for="username"
+        :error="errors.username?.[0]">
+        <Input
+          v-model="formState.username"
+          type="text"
+          placeholder="Username" />
+      </Label>
+      <Label
+        label="Email"
+        html-for="email"
+        :error="errors.email?.[0]">
+        <Input
+          v-model="formState.email"
+          type="text"
+          placeholder="Email" />
+      </Label>
+      <Label
+        label="Password"
+        html-for="password"
+        :error="errors.password?.[0]">
+        <Input
+          v-model="formState.password"
+          type="password"
+          placeholder="Password" />
+      </Label>
       <Button
         type="submit"
         :variant="ButtonVariant.DEFAULT"
         :size="ButtonSize.LARGE">
+        <template #left-icon>
+          <Loader v-if="isPending" />
+        </template>
         {{ authMode === AUTH_UI_MODE.LOGIN ? 'Login' : 'Signup' }}
       </Button>
     </form>
