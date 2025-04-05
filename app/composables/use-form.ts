@@ -6,18 +6,29 @@ interface UseFormInput<T> {
   onSubmit: () => Promise<void>;
 }
 
-export const useForm = <T>(input: UseFormInput<T>) => {
+export const useForm = <T extends Record<string, unknown>>(input: UseFormInput<T>) => {
   const isPending = ref(false);
   const errors = ref<Record<string, string | string[]>>({});
   const formState = ref<T>(input.defaultValues);
 
   const handleSubmit = async () => {
     isPending.value = true;
-    const result = input.schema.safeParse(formState.value);
+    errors.value = {};
+
+    const dataToValidate = Object.fromEntries(
+      Object.entries(formState.value).filter(([_, value]) => value !== '')
+    ) as T;
+
+    const result = input.schema.safeParse(dataToValidate);
+
     if (!result.success) {
       errors.value = result.error.flatten().fieldErrors;
     } else {
-      await input.onSubmit();
+      try {
+        await input.onSubmit();
+      } catch {
+        isPending.value = false;
+      }
     }
     isPending.value = false;
   };

@@ -5,6 +5,7 @@ import { ButtonSize, ButtonVariant } from '~/components/Button/button.types';
 import Label from '~/components/Label/label.vue';
 import Button from '~/components/Button/button.vue';
 import Input from '~/components/Input/input.vue';
+import { InputVariant } from '~/components/Input/input.types';
 
 enum AUTH_UI_MODE {
   LOGIN = 'login',
@@ -15,16 +16,16 @@ type FormState = z.infer<typeof formStateSchema>;
 
 const formStateSchema = z.object({
   email: z
-    .string()
+    .string({ required_error: 'Email is required' })
     .min(1, { message: 'Email is required' })
     .email({ message: 'Invalid email address' }),
   password: z
-    .string()
+    .string({ required_error: 'Password is required' })
     .min(1, { message: 'Password is required' })
     .min(6, { message: 'Password must be at least 6 characters' })
     .max(16, { message: 'Password must be less than 16 characters' }),
   username: z
-    .string()
+    .string({ required_error: 'Username is required' })
     .min(1, { message: 'Username is required' })
     .min(3, { message: 'Username must be at least 3 characters' })
     .max(16, { message: 'Username must be less than 16 characters' })
@@ -43,13 +44,7 @@ const { showToast } = useToast();
 const { formState, isPending, errors, handleSubmit } = useForm<FormState>({
   defaultValues,
   schema: formStateSchema,
-  onSubmit: async () => {
-    if (authMode.value === AUTH_UI_MODE.LOGIN) {
-      await handleLogin();
-    } else {
-      await handleSignup();
-    }
-  },
+  onSubmit: async () => (authMode.value === AUTH_UI_MODE.LOGIN ? handleLogin() : handleSignup()),
 });
 
 const handleLogin = async () => {
@@ -115,7 +110,8 @@ const logout = async () => {
         <Input
           v-model="formState.username"
           type="text"
-          placeholder="Username" />
+          placeholder="Enter your username"
+          :variant="errors.password ? InputVariant.DESTRUCTIVE : InputVariant.DEFAULT" />
       </Label>
       <Label
         label="Email"
@@ -124,7 +120,8 @@ const logout = async () => {
         <Input
           v-model="formState.email"
           type="text"
-          placeholder="Email" />
+          placeholder="Enter your email"
+          :variant="errors.password ? InputVariant.DESTRUCTIVE : InputVariant.DEFAULT" />
       </Label>
       <Label
         label="Password"
@@ -133,14 +130,18 @@ const logout = async () => {
         <Input
           v-model="formState.password"
           type="password"
-          placeholder="Password" />
+          placeholder="Enter your password"
+          :variant="errors.password ? InputVariant.DESTRUCTIVE : InputVariant.DEFAULT" />
       </Label>
       <Button
         type="submit"
+        :disabled="isPending"
         :variant="ButtonVariant.DEFAULT"
         :size="ButtonSize.LARGE">
         <template #left-icon>
-          <Loader v-if="isPending" />
+          <Loader
+            v-if="isPending"
+            class="animate-spin" />
         </template>
         {{ authMode === AUTH_UI_MODE.LOGIN ? 'Login' : 'Signup' }}
       </Button>
