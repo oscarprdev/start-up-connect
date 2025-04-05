@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite';
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   future: { compatibilityVersion: 4 },
@@ -8,13 +10,17 @@ export default defineNuxtConfig({
     typeCheck: true,
     strict: false,
   },
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  css: ['~/assets/css/main.css'],
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/test-utils',
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/supabase',
+    'motion-v/nuxt',
   ],
   supabase: {
     url: process.env.SUPABASE_URL,

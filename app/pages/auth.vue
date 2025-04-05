@@ -10,6 +10,9 @@ type FormState = {
   username?: string;
 }   
 
+const supabase = useSupabaseClient();
+const { showToast } = useToast();
+
 const authMode = ref<AUTH_UI_MODE>(AUTH_UI_MODE.LOGIN);
 const isLoading = ref(false);
 const formState = ref<FormState>({
@@ -28,7 +31,6 @@ const handleSubmit = async () => {
   isLoading.value = false;
 }
 
-const supabase = useSupabaseClient();
 
 const handleLogin = async () => {
   await $fetch('/api/auth/login', {
@@ -37,15 +39,25 @@ const handleLogin = async () => {
       email: formState.value.email,
       password: formState.value.password,
     }),
-    onResponse: async (response) => {
-      const session = response.response._data.session;
+    onResponse: async ({response}) => {
+      if (!response.ok) {
+        return showToast(response._data.message, ToastType.Error);
+      }
+
+      const session = response._data.session;
       await supabase.auth.setSession({
         access_token: session?.token,
         refresh_token: session?.refreshToken,
       });
       navigateTo('/');
-    }
-  });
+    },
+    onResponseError: (error) => {
+      const data = error.response._data;
+      if (data.error) {
+        return showToast(data.message, ToastType.Error);
+      }
+    },
+  }); 
 }
 
 const handleSignup = async () => {
@@ -58,6 +70,9 @@ const handleSignup = async () => {
     }),
     onResponse: () => {
       authMode.value = AUTH_UI_MODE.LOGIN;
+    },
+    onResponseError: (error) => {
+      showToast(error.response._data.message, ToastType.Error);
     }
   });
 }
@@ -82,19 +97,25 @@ const logout = async () => {
         type="text"
         placeholder="Username"
         class="border-2 border-gray-300 rounded-md p-2"
-        
+        maxlength="16"
+        required
       />
       <input
         v-model="formState.email"
         type="email"
         placeholder="Email"
-        class="border-2 border-gray-300 rounded-md p-2"
+        class="border border-gray-300 rounded-md p-2 not-placeholder-shown:invalid:border-red-500 not-placeholder-shown:invalid:ring-2 not-placeholder-shown:invalid:ring-red-200 "
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        required
       />
       <input
         v-model="formState.password"
         type="password"
         placeholder="Password"
         class="border-2 border-gray-300 rounded-md p-2"
+        minlength="6"
+        maxlength="16"
+        required
       />
       <button
         type="submit"

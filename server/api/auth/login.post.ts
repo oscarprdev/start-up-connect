@@ -32,7 +32,11 @@ export default defineEventHandler(async event => {
 const getExisitingUser = async (event: H3Event<EventHandlerRequest>) => {
   const { email, password } = await readValidatedBody(event, bodySchema.parse);
   const user = await usersQueries.getUserByEmailOrUsername({ email, username: '' });
-  if (!user) throw createError({ statusCode: 404, message: 'User not found' });
+  if (!user)
+    throw createError({
+      statusCode: 404,
+      message: 'Error logging in, please check your credentials',
+    });
 
   return {
     email,
