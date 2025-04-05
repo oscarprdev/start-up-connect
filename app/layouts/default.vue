@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Toast from '~/components/toast.vue';
+import Toast from '~/components/Toast/toast.vue';
 </script>
 
 <template>
   <div class="h-screen w-screen">
-    <Header/>
+    <Header />
     <slot />
-   <Toast />
+    <Toast />
   </div>
 </template>

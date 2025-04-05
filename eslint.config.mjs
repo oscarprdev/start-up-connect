@@ -9,6 +9,5 @@ export default withNuxt({
     'no-undef': 'off',
     'vue/no-v-html': 'off',
     'vue/max-attributes-per-line': 'off',
-    'vue/single-attribute-per-line': 'off',
   },
 });
