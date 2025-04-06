@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { cva } from 'class-variance-authority';
-import type { InputVariant, InputSize } from './input.types';
+import {
+  type InputVariant,
+  type InputSize,
+  type InputType,
+  InputType as InputTypeValue,
+} from './input.types';
 
 const props = defineProps<{
-  type: string;
+  type: InputType;
   placeholder: string;
   variant?: InputVariant;
   size?: InputSize;
@@ -43,6 +48,10 @@ const inputStyles = computed(() => {
   return cn(inputVariants({ variant: props.variant, sizes: props.size }), props.class);
 });
 
+const autoComplete = computed(() =>
+  props.type === InputTypeValue.PASSWORD ? 'current-password' : ''
+);
+
 const emit = defineEmits<{
   (e: 'update:value', value: string): void;
 }>();
@@ -62,5 +71,6 @@ const handleInput = (e: Event) => {
     :maxlength="maxlength"
     :minlength="minlength"
     :class="inputStyles"
+    :autocomplete="autoComplete"
     @input="handleInput" />
 </template>
