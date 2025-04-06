@@ -2,11 +2,14 @@ const AUTH_PATH = '/auth';
 
 export default defineNuxtRouteMiddleware(to => {
   const session = useSupabaseSession();
-  if (!session.value) {
+  const isUserLogged = session.value;
+  const isGoingToAuthPath = to.path.match(AUTH_PATH);
+
+  if (!isUserLogged && !isGoingToAuthPath) {
     return navigateTo(AUTH_PATH);
   }
 
-  if (to.path.match(AUTH_PATH) && session.value) {
+  if (isUserLogged && isGoingToAuthPath) {
     return navigateTo('/');
   }
 });
