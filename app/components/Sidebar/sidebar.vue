@@ -6,12 +6,11 @@ defineProps<{ isOpen: boolean }>();
 <template>
   <AnimatePresence>
     <motion.aside
-      :initial="{ x: 0 }"
-      :animate="{ x: isOpen ? 0 : -300 }"
-      :exit="{ x: -300 }"
+      :initial="{ width: '300px', x: 0 }"
+      :animate="{ width: isOpen ? '300px' : '50px' }"
       :transition="{ duration: 0.3, ease: 'easeInOut' }"
-      class="relative h-full w-[300px] bg-red-500 z-0">
-      sidebar
+      class="relative h-full bg-red-500 z-0">
+      <slot />
     </motion.aside>
   </AnimatePresence>
 </template>

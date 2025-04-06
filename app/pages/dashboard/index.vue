@@ -6,5 +6,9 @@ definePageMeta({
 </script>
 
 <template>
-  <p>Dashboard</p>
+  <main class="w-full">
+    <div class="flex flex-col gap-4">
+      <h1 class="text-2xl font-bold">Dashboard</h1>
+    </div>
+  </main>
 </template>

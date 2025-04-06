@@ -1,29 +1,23 @@
 <script lang="ts" setup>
-import { PanelRightOpen, PanelRightClose } from 'lucide-vue-next';
-import Sidebar from '~/components/Sidebar/sidebar.vue';
+import SidebarProvider from '~/components/Sidebar/SidebarProvider.vue';
+import { Lightbulb } from 'lucide-vue-next';
 
 definePageMeta({
   middleware: ['auth'],
 });
-
-const isSidebarOpen = ref(true);
-
-const toggleSidebarVisibility = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-};
 </script>
 
 <template>
   <NuxtLayout name="default">
-    <section class="relative h-screen w-screen flex bg-green-100">
-      <button
-        class="absolute top-4 left-4 z-50"
-        @click="toggleSidebarVisibility">
-        <PanelRightOpen v-if="isSidebarOpen" />
-        <PanelRightClose v-else />
-      </button>
-      <Sidebar :is-open="isSidebarOpen" />
-      <slot />
-    </section>
+    <SidebarProvider>
+      <template #sidebar>
+        <NuxtLink to="/dashboard/ideas">
+          <Lightbulb />
+        </NuxtLink>
+      </template>
+      <template #screen>
+        <slot />
+      </template>
+    </SidebarProvider>
   </NuxtLayout>
 </template>

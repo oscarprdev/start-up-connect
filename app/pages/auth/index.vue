@@ -2,9 +2,9 @@
 import { Loader } from 'lucide-vue-next';
 import { z } from 'zod';
 import { ButtonSize, ButtonVariant } from '~/components/Button/button.types';
-import Label from '~/components/Label/label.vue';
-import Button from '~/components/Button/button.vue';
-import Input from '~/components/Input/input.vue';
+import Label from '~/components/Label/Label.vue';
+import Button from '~/components/Button/Button.vue';
+import Input from '~/components/Input/Input.vue';
 import { InputVariant } from '~/components/Input/input.types';
 
 definePageMeta({
