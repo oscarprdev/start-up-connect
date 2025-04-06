@@ -6,7 +6,7 @@ definePageMeta({
   middleware: ['auth'],
 });
 
-const isSidebarOpen = ref(false);
+const isSidebarOpen = ref(true);
 
 const toggleSidebarVisibility = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
