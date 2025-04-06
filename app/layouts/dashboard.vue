@@ -8,7 +8,7 @@ definePageMeta({
 
 const isSidebarOpen = ref(false);
 
-const handleToggleSidebarVisibility = () => {
+const toggleSidebarVisibility = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };
 </script>
@@ -18,7 +18,7 @@ const handleToggleSidebarVisibility = () => {
     <section class="relative h-screen w-screen flex bg-green-100">
       <button
         class="absolute top-4 left-4 z-50"
-        @click="handleToggleSidebarVisibility">
+        @click="toggleSidebarVisibility">
         <PanelRightOpen v-if="isSidebarOpen" />
         <PanelRightClose v-else />
       </button>
