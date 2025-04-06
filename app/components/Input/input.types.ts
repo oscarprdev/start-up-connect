@@ -4,7 +4,7 @@ export const InputVariant = {
   DESTRUCTIVE: 'destructive',
 } as const;
 
-export type InputVariantType = (typeof InputVariant)[keyof typeof InputVariant];
+export type InputVariant = (typeof InputVariant)[keyof typeof InputVariant];
 
 export const InputSize = {
   DEFAULT: 'default',
@@ -12,4 +12,4 @@ export const InputSize = {
   LG: 'lg',
 } as const;
 
-export type InputSizeType = (typeof InputSize)[keyof typeof InputSize];
+export type InputSize = (typeof InputSize)[keyof typeof InputSize];

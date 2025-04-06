@@ -12,7 +12,7 @@ const AUTH_UI_MODE = {
   SIGNUP: 'signup',
 } as const;
 
-type AUTH_UI_MODE_TYPE = (typeof AUTH_UI_MODE)[keyof typeof AUTH_UI_MODE];
+type AUTH_UI_MODE = (typeof AUTH_UI_MODE)[keyof typeof AUTH_UI_MODE];
 
 type FormState = z.infer<typeof formStateSchema>;
 
@@ -40,7 +40,7 @@ const defaultValues: FormState = {
   username: '',
 };
 
-const authMode = ref<AUTH_UI_MODE_TYPE>(AUTH_UI_MODE.LOGIN);
+const authMode = ref<AUTH_UI_MODE>(AUTH_UI_MODE.LOGIN);
 const supabase = useSupabaseClient();
 const { showToast } = useToast();
 const { formState, isPending, errors, handleSubmit } = useForm<FormState>({

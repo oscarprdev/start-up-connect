@@ -7,7 +7,7 @@ export const ButtonVariant = {
   LINK: 'link',
 } as const;
 
-export type ButtonVariantType = (typeof ButtonVariant)[keyof typeof ButtonVariant];
+export type ButtonVariant = (typeof ButtonVariant)[keyof typeof ButtonVariant];
 
 export const ButtonSize = {
   DEFAULT: 'default',
@@ -16,4 +16,4 @@ export const ButtonSize = {
   ICON: 'icon',
 } as const;
 
-export type ButtonSizeType = (typeof ButtonSize)[keyof typeof ButtonSize];
+export type ButtonSize = (typeof ButtonSize)[keyof typeof ButtonSize];
