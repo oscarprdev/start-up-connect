@@ -7,10 +7,12 @@ import Button from '~/components/Button/button.vue';
 import Input from '~/components/Input/input.vue';
 import { InputVariant } from '~/components/Input/input.types';
 
-enum AUTH_UI_MODE {
-  LOGIN = 'login',
-  SIGNUP = 'signup',
-}
+const AUTH_UI_MODE = {
+  LOGIN: 'login',
+  SIGNUP: 'signup',
+} as const;
+
+type AUTH_UI_MODE_TYPE = (typeof AUTH_UI_MODE)[keyof typeof AUTH_UI_MODE];
 
 type FormState = z.infer<typeof formStateSchema>;
 
@@ -38,7 +40,7 @@ const defaultValues: FormState = {
   username: '',
 };
 
-const authMode = ref<AUTH_UI_MODE>(AUTH_UI_MODE.LOGIN);
+const authMode = ref<AUTH_UI_MODE_TYPE>(AUTH_UI_MODE.LOGIN);
 const supabase = useSupabaseClient();
 const { showToast } = useToast();
 const { formState, isPending, errors, handleSubmit } = useForm<FormState>({
