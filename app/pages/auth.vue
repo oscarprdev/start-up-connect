@@ -7,6 +7,10 @@ import Button from '~/components/Button/button.vue';
 import Input from '~/components/Input/input.vue';
 import { InputVariant } from '~/components/Input/input.types';
 
+definePageMeta({
+  middleware: ['auth'],
+});
+
 const AUTH_UI_MODE = {
   LOGIN: 'login',
   SIGNUP: 'signup',
@@ -93,14 +97,9 @@ const handleSignup = async () => {
     },
   });
 };
-
-const logout = async () => {
-  await supabase.auth.signOut();
-};
 </script>
 <template>
   <div class="flex flex-col items-center justify-center h-screen">
-    <button @click="logout">Logout</button>
     <form
       class="flex flex-col gap-4"
       @submit.prevent="handleSubmit">
