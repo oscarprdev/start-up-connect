@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { usersQueries } from '~~/server/resources/users/users.queries';
-import { usersMutations } from '~~/server/resources/users/users.mutations';
-import { supabase } from '~~/server/db';
+import { usersTable } from '~~/server/db/schemas';
+import { db, supabase } from '~~/server/db';
 import type { H3Event, EventHandlerRequest } from 'h3';
+import { eq, or } from 'drizzle-orm';
 
 const bodySchema = z.object({
   username: z.string(),
@@ -14,11 +14,7 @@ export default defineEventHandler(async event => {
   try {
     const { username, email, password } = await verifyUser(event);
     const user = await signUpUser(email, password);
-    await usersMutations.storeUser({
-      id: user.id,
-      email,
-      username,
-    });
+    await storeUser({ id: user.id, email, username });
 
     return {
       message: 'User created successfully',
@@ -33,7 +29,11 @@ export default defineEventHandler(async event => {
 
 const verifyUser = async (event: H3Event<EventHandlerRequest>) => {
   const { email, password, username } = await readValidatedBody(event, bodySchema.parse);
-  const user = await usersQueries.getUserByEmailOrUsername({ email, username });
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(or(eq(usersTable.email, email), eq(usersTable.username, username)));
+
   if (user) {
     throw createError({
       statusCode: 400,
@@ -60,4 +60,16 @@ const signUpUser = async (email: string, password: string) => {
   }
 
   return data.user;
+};
+
+const storeUser = async ({
+  id,
+  email,
+  username,
+}: {
+  id: string;
+  email: string;
+  username: string;
+}) => {
+  await db.insert(usersTable).values({ id, email, username });
 };

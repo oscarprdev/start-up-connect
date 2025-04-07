@@ -1,7 +1,10 @@
 import { z } from 'zod';
-import { usersQueries } from '~~/server/resources/users/users.queries';
 import { createClient } from '@supabase/supabase-js';
 import type { H3Event, EventHandlerRequest } from 'h3';
+import { usersTable } from '~~/server/db/schemas';
+import { db } from '~~/server/db';
+import { eq } from 'drizzle-orm';
+
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
 const bodySchema = z.object({
@@ -31,7 +34,7 @@ export default defineEventHandler(async event => {
 
 const getExisitingUser = async (event: H3Event<EventHandlerRequest>) => {
   const { email, password } = await readValidatedBody(event, bodySchema.parse);
-  const user = await usersQueries.getUserByEmailOrUsername({ email, username: '' });
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
   if (!user)
     throw createError({
       statusCode: 404,

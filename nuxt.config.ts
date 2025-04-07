@@ -28,4 +28,8 @@ export default defineNuxtConfig({
     useSsrCookies: true,
     redirect: false,
   },
+  runtimeConfig: {
+    openaiApiKey: process.env.OPENAI_API_KEY,
+    perplexityApiKey: process.env.PERPLEXITY_API_KEY,
+  },
 });
