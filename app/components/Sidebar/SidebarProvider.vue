@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PanelRightOpen, PanelRightClose } from 'lucide-vue-next';
+import { PanelRightOpen, PanelRightClose, Lightbulb } from 'lucide-vue-next';
 import Sidebar from '~/components/Sidebar/Sidebar.vue';
 
 const isSidebarOpen = useState(() => true);
@@ -12,11 +12,24 @@ const toggleSidebarVisibility = () => {
 <template>
   <section class="relative h-[calc(100vh-3rem)] w-screen flex overflow-hidden">
     <Sidebar :is-open="isSidebarOpen">
-      <slot name="sidebar" />
+      <template #sidebar-content>
+        <NuxtLink
+          to="/dashboard/ideas"
+          class="relative w-full items-center justify-start flex hover:bg-sidebar-primary-foreground rounded-md duration-200">
+          <Lightbulb
+            :size="17"
+            class="m-2" />
+          <p
+            v-if="isSidebarOpen"
+            class="duration-200 truncate flex-1">
+            Ideas
+          </p>
+        </NuxtLink>
+      </template>
     </Sidebar>
     <div class="relative flex-1 p-4">
       <button
-        class="absolute top-4 left-4 z-50"
+        class="absolute top-2 left-2 z-50 text-muted-foreground/50 rounded-md p-2 bg-muted hover:text-foreground/50 duration-200"
         @click="toggleSidebarVisibility">
         <PanelRightOpen v-if="isSidebarOpen" />
         <PanelRightClose v-else />

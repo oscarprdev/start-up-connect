@@ -9,13 +9,14 @@ const logout = async () => {
 </script>
 
 <template>
-  <header class="flex justify-between items-center p-4 bg-blue-500 h-[3rem]">
-    <h1>Header</h1>
-    <p>{{ user?.email }}</p>
+  <header class="fixed flex justify-between items-center px-[0.9rem] py-2 z-50 w-screen">
+    <div class="w-5 h-5 rounded-full bg-accent" />
+
     <button
       v-if="user"
+      class="px-4 py-2 rounded-full bg-accent text-accent-foreground"
       @click="logout">
-      Logout
+      {{ user?.email.slice(0, 1) }}
     </button>
   </header>
 </template>

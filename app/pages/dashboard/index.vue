@@ -6,9 +6,12 @@ definePageMeta({
 </script>
 
 <template>
-  <main class="w-full">
-    <div class="flex flex-col gap-4">
-      <h1 class="text-2xl font-bold">Dashboard</h1>
-    </div>
+  <main class="w-full h-full flex flex-col items-center">
+    <h1>Welcome to your ai-founder assistant.</h1>
+    <section class="p-5 border shadow-sm rounded-xl w-full max-w-[600px]">
+      <textarea
+        class="size-full focus:outline-none"
+        placeholder="What's your idea about?" />
+    </section>
   </main>
 </template>
