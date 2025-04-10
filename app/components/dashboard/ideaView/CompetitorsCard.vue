@@ -4,18 +4,19 @@ const props = defineProps<{
   userAccessToken: string;
 }>();
 
+const COMPONENT_KEY = 'competitors';
 const toast = useToast();
 
-await useFetch(`/api/competitors/${props.ideaId}`, {
+await useFetch(`/api/${COMPONENT_KEY}/${props.ideaId}`, {
   lazy: true,
   headers: {
     Authorization: `Bearer ${props.userAccessToken}`,
   },
-  key: 'competitors',
+  key: COMPONENT_KEY,
   onResponse: async ({ response: { _data } }) => {
     if (_data.alreadyExists) return;
 
-    await $fetch('/api/competitors', {
+    await $fetch(`/api/${COMPONENT_KEY}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${props.userAccessToken}`,
@@ -34,7 +35,7 @@ await useFetch(`/api/competitors/${props.ideaId}`, {
   },
 });
 
-const { data } = useNuxtData('competitors');
+const { data } = useNuxtData(COMPONENT_KEY);
 </script>
 
 <template>

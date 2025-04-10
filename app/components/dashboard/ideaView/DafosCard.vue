@@ -4,18 +4,19 @@ const props = defineProps<{
   userAccessToken: string;
 }>();
 
+const COMPONENT_KEY = 'dafos';
 const toast = useToast();
 
-await useFetch(`/api/dafos/${props.ideaId}`, {
+await useFetch(`/api/${COMPONENT_KEY}/${props.ideaId}`, {
   lazy: true,
   headers: {
     Authorization: `Bearer ${props.userAccessToken}`,
   },
-  key: 'dafos',
+  key: COMPONENT_KEY,
   onResponse: async ({ response: { _data } }) => {
     if (_data.alreadyExists) return;
 
-    await $fetch('/api/dafos', {
+    await $fetch(`/api/${COMPONENT_KEY}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${props.userAccessToken}`,
@@ -34,13 +35,13 @@ await useFetch(`/api/dafos/${props.ideaId}`, {
   },
 });
 
-const { data: dafos } = useNuxtData('dafos');
+const { data } = useNuxtData(COMPONENT_KEY);
 </script>
 
 <template>
   <div>
     <p>dafos</p>
-    <p v-if="dafos">{{ dafos }}</p>
+    <p v-if="data">{{ data }}</p>
     <p v-else>Loading dafos...</p>
   </div>
 </template>
