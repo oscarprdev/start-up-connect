@@ -17,9 +17,12 @@ export default defineEventHandler(
 );
 
 const storeCompetitor = async ({ ideaId, analisys }: { ideaId: string; analisys: string }) => {
-  const [competitor] = await db.insert(competitorsTable).values({
-    ideaId,
-    analisys,
-  });
+  const [competitor] = await db
+    .insert(competitorsTable)
+    .values({
+      analisys,
+      ideaId,
+    })
+    .returning();
   return competitor;
 };

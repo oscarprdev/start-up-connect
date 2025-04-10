@@ -7,6 +7,7 @@
 dist
 .cursor
 
+
 # Node dependencies
 node_modules
 

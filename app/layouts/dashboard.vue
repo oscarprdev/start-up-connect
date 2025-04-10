@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import SidebarProvider from '~/components/Sidebar/SidebarProvider.vue';
-
 definePageMeta({
   middleware: ['auth'],
 });
@@ -8,10 +6,6 @@ definePageMeta({
 
 <template>
   <NuxtLayout name="default">
-    <SidebarProvider>
-      <template #screen>
-        <slot />
-      </template>
-    </SidebarProvider>
+    <slot />
   </NuxtLayout>
 </template>

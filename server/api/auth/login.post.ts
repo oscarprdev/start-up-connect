@@ -15,12 +15,13 @@ const bodySchema = z.object({
 export default defineEventHandler(async event => {
   try {
     const { email, password } = await getExisitingUser(event);
-    const { token } = await signInUser(email, password);
+    const { token, refreshToken } = await signInUser(email, password);
 
     return {
       message: 'Login successful',
       session: {
         token,
+        refreshToken,
       },
     };
   } catch (error) {
@@ -57,5 +58,6 @@ const signInUser = async (email: string, password: string) => {
 
   return {
     token: data.session?.access_token,
+    refreshToken: data.session?.refresh_token,
   };
 };

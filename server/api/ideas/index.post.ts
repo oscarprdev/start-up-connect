@@ -25,10 +25,13 @@ export default defineEventHandler(
 );
 
 const storeIdea = async ({ title, description, userId }: StoreIdeaParams): Promise<Idea> => {
-  const [idea] = await db.insert(ideasTable).values({
-    title,
-    description,
-    userId,
-  });
+  const [idea] = await db
+    .insert(ideasTable)
+    .values({
+      title,
+      description,
+      userId,
+    })
+    .returning();
   return idea;
 };

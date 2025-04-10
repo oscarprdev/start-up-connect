@@ -24,7 +24,10 @@ const storeDAFO = async (dafo: SimpleDAFOSchema, ideaId: string): Promise<Dafos>
   const [dafos] = await db
     .insert(dafosTable)
     .values({
-      ...dafo,
+      strengths: dafo.strengths,
+      weaknesses: dafo.weaknesses,
+      opportunities: dafo.opportunities,
+      threats: dafo.threats,
       ideaId,
     })
     .returning();

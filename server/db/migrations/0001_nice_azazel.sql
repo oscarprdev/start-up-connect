@@ -1,0 +1,1 @@
+ALTER TABLE "roadmaps" ADD COLUMN "text" text NOT NULL;
