@@ -1,18 +1,25 @@
 import { db } from '~~/server/db';
-import type { Idea } from '~~/server/db/schemas';
-import { ideasTable } from '~~/server/db/schemas';
+import type { Dafos, Idea } from '~~/server/db/schemas';
+import { dafoDTO, dafosTable, ideasTable } from '~~/server/db/schemas';
 import { eq } from 'drizzle-orm';
-import { createOpenAI } from '@ai-sdk/openai';
-import { generateObject } from 'ai';
 import type { H3Event, EventHandlerRequest } from 'h3';
 import type { SimpleDAFOSchema } from './types';
 import { simpleDAFOSchema } from './types';
 import { validateResponse } from '~~/server/utils/validate-response';
+import { useOpenAI } from '~~/server/utils/use-openai';
 
 export default defineEventHandler(
   authMiddleware(async event => {
     const idea = await getIdea(event);
-    const dafo = await generateDAFO(idea);
+    const currentDAFO = await getCurrentDAFO(idea);
+    if (currentDAFO) {
+      return validateResponse(currentDAFO, dafoDTO);
+    }
+
+    const dafo = await useOpenAI<SimpleDAFOSchema>({
+      schema: simpleDAFOSchema,
+      prompt: `Generate a DAFO for the following idea: ${idea.description}`,
+    });
 
     return validateResponse(dafo, simpleDAFOSchema);
   })
@@ -21,28 +28,16 @@ export default defineEventHandler(
 const getIdea = async (event: H3Event<EventHandlerRequest>) => {
   const { id } = getRouterParams(event);
   const [idea] = await db.select().from(ideasTable).where(eq(ideasTable.id, id));
+  if (!idea) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Idea not found',
+    });
+  }
   return idea;
 };
 
-const generateDAFO = async (idea: Idea): Promise<SimpleDAFOSchema> => {
-  const apiKey = useRuntimeConfig().openaiApiKey;
-  if (!apiKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'OpenAI API key is not set',
-    });
-  }
-
-  const openai = createOpenAI({
-    compatibility: 'strict',
-    apiKey,
-  });
-
-  const { object } = await generateObject({
-    model: openai.responses('gpt-4o'),
-    schema: simpleDAFOSchema,
-    prompt: `Generate a DAFO for the following idea: ${idea.description}`,
-  });
-
-  return object;
+const getCurrentDAFO = async (idea: Idea): Promise<Dafos | null> => {
+  const [dafo] = await db.select().from(dafosTable).where(eq(dafosTable.ideaId, idea.id));
+  return dafo;
 };
