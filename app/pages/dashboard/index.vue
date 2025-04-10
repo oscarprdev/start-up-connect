@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { z } from 'zod';
-import Input from '~/components/Input/Input.vue';
-import Button from '~/components/Button/Button.vue';
-import { ButtonVariant, ButtonSize } from '~/components/Button/button.types';
+import Input from '~/components/ui/Input/Input.vue';
+import Button from '~/components/ui/Button/Button.vue';
+import { ButtonVariant, ButtonSize } from '~/components/ui/Button/button.types';
 import { Loader } from 'lucide-vue-next';
 
 definePageMeta({

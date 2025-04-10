@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Loader } from 'lucide-vue-next';
 import { z } from 'zod';
-import { ButtonSize, ButtonVariant } from '~/components/Button/button.types';
+import { ButtonSize, ButtonVariant } from '~/components/ui/Button/button.types';
 import Label from '~/components/Label/Label.vue';
-import Button from '~/components/Button/Button.vue';
-import Input from '~/components/Input/Input.vue';
-import { InputVariant } from '~/components/Input/input.types';
+import Button from '~/components/ui/Button/Button.vue';
+import Input from '~/components/ui/Input/Input.vue';
+import { InputVariant } from '~/components/ui/Input/input.types';
 
 definePageMeta({
   middleware: ['auth'],
