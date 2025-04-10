@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, pgTableCreator, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { z } from 'zod';
 
 export const createTable = pgTableCreator(name => `${name}`);
 
@@ -165,3 +166,86 @@ export type Competitor = typeof competitorsTable.$inferSelect;
 export type Dafos = typeof dafosTable.$inferSelect;
 export type Idea = typeof ideasTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
+
+export const validateUser = (user: User) => userDTO.safeParse(user);
+export const validateIdea = (idea: Idea) => ideaDTO.safeParse(idea);
+export const validateDafos = (dafos: Dafos) => dafoDTO.safeParse(dafos);
+export const validateCompetitor = (competitor: Competitor) => competitorDTO.safeParse(competitor);
+export const validateUvps = (uvps: Uvps) => uvpsDTO.safeParse(uvps);
+export const validateBuyerPersona = (buyerPersona: BuyerPersona) =>
+  buyerPersonaDTO.safeParse(buyerPersona);
+
+export const userDTO = z.object({
+  id: z.string(),
+  username: z.string(),
+  email: z.string(),
+  image: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const ideaDTO = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const dafoDTO = z.object({
+  id: z.string(),
+  strengths: z.string(),
+  weaknesses: z.string(),
+  opportunities: z.string(),
+  threats: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const competitorDTO = z.object({
+  id: z.string(),
+  analisys: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const uvpsDTO = z.object({
+  id: z.string(),
+  text: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const buyerPersonaDTO = z.object({
+  id: z.string(),
+  description: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const roadmapItemDTO = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  status: z.string(),
+  priority: z.number(),
+  order: z.number(),
+  dueDate: z.date(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const roadmapDTO = z.object({
+  id: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export type UserDTO = z.infer<typeof userDTO>;
+export type IdeaDTO = z.infer<typeof ideaDTO>;
+export type DafosDTO = z.infer<typeof dafoDTO>;
+export type CompetitorDTO = z.infer<typeof competitorDTO>;
+export type UvpsDTO = z.infer<typeof uvpsDTO>;
+export type BuyerPersonaDTO = z.infer<typeof buyerPersonaDTO>;
+export type RoadmapItemDTO = z.infer<typeof roadmapItemDTO>;
+export type RoadmapDTO = z.infer<typeof roadmapDTO>;

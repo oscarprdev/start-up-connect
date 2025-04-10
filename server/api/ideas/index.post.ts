@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { db } from '~~/server/db';
-import { ideasTable } from '~~/server/db/schemas';
+import type { Idea } from '~~/server/db/schemas';
+import { ideaDTO, ideasTable } from '~~/server/db/schemas';
+import { validateResponse } from '~~/server/utils/validate-response';
 
 interface StoreIdeaParams {
   title: string;
@@ -18,12 +20,12 @@ export default defineEventHandler(
     const { title, description } = await readValidatedBody(event, bodySchema.parse);
     const idea = await storeIdea({ title, description, userId: event.context.user.id });
 
-    return idea;
+    return validateResponse(idea, ideaDTO);
   })
 );
 
-const storeIdea = async ({ title, description, userId }: StoreIdeaParams) => {
-  const idea = await db.insert(ideasTable).values({
+const storeIdea = async ({ title, description, userId }: StoreIdeaParams): Promise<Idea> => {
+  const [idea] = await db.insert(ideasTable).values({
     title,
     description,
     userId,

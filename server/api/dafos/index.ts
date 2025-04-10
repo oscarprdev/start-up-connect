@@ -1,26 +1,20 @@
 import { db } from '~~/server/db';
 import type { Idea } from '~~/server/db/schemas';
-import { dafosTable, ideasTable } from '~~/server/db/schemas';
+import { ideasTable } from '~~/server/db/schemas';
 import { eq } from 'drizzle-orm';
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
-import { z } from 'zod';
 import type { H3Event, EventHandlerRequest } from 'h3';
-
-const dafoSchema = z.object({
-  strengths: z.string(),
-  weaknesses: z.string(),
-  opportunities: z.string(),
-  threats: z.string(),
-});
+import type { SimpleDAFOSchema } from './types';
+import { simpleDAFOSchema } from './types';
+import { validateResponse } from '~~/server/utils/validate-response';
 
 export default defineEventHandler(
   authMiddleware(async event => {
     const idea = await getIdea(event);
     const dafo = await generateDAFO(idea);
-    const dafos = await storeDAFO(dafo, idea.id);
 
-    return dafos;
+    return validateResponse(dafo, simpleDAFOSchema);
   })
 );
 
@@ -30,7 +24,7 @@ const getIdea = async (event: H3Event<EventHandlerRequest>) => {
   return idea;
 };
 
-const generateDAFO = async (idea: Idea): Promise<typeof dafoSchema._type> => {
+const generateDAFO = async (idea: Idea): Promise<SimpleDAFOSchema> => {
   const apiKey = useRuntimeConfig().openaiApiKey;
   if (!apiKey) {
     throw createError({
@@ -46,17 +40,9 @@ const generateDAFO = async (idea: Idea): Promise<typeof dafoSchema._type> => {
 
   const { object } = await generateObject({
     model: openai.responses('gpt-4o'),
-    schema: dafoSchema,
+    schema: simpleDAFOSchema,
     prompt: `Generate a DAFO for the following idea: ${idea.description}`,
   });
 
   return object;
-};
-
-const storeDAFO = async (dafo: typeof dafoSchema._type, ideaId: string) => {
-  const dafos = await db.insert(dafosTable).values({
-    ...dafo,
-    ideaId,
-  });
-  return dafos;
 };
