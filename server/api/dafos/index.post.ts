@@ -4,7 +4,8 @@ import { simpleDAFOSchema } from './types';
 import { z } from 'zod';
 import type { Dafos } from '~~/server/db/schemas';
 import { dafosTable, dafoDTO } from '~~/server/db/schemas';
-import { validateResponse } from '~~/server/utils/validate-response';
+import { validateResponse } from '~~/server/shared/validate-response';
+import { authMiddleware } from '~~/server/shared/auth';
 
 const bodyShema = z.object({
   dafo: simpleDAFOSchema,

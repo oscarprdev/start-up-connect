@@ -2,7 +2,8 @@ import { z } from 'zod';
 import { db } from '~~/server/db';
 import type { Idea } from '~~/server/db/schemas';
 import { ideaDTO, ideasTable } from '~~/server/db/schemas';
-import { validateResponse } from '~~/server/utils/validate-response';
+import { authMiddleware } from '~~/server/shared/auth';
+import { validateResponse } from '~~/server/shared/validate-response';
 
 interface StoreIdeaParams {
   title: string;

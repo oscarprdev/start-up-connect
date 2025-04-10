@@ -4,9 +4,10 @@ import { dafoDTO, dafosTable } from '~~/server/db/schemas';
 import { eq } from 'drizzle-orm';
 import type { SimpleDAFOSchema } from './types';
 import { simpleDAFOSchema } from './types';
-import { validateResponse } from '~~/server/utils/validate-response';
-import { useOpenAI } from '~~/server/utils/use-openai';
-import { getIdea } from '~~/server/utils/get-idea';
+import { validateResponse } from '~~/server/shared/validate-response';
+import { useOpenAI } from '~~/server/shared/use-openai';
+import { getIdea } from '~~/server/shared/get-idea';
+import { authMiddleware } from '~~/server/shared/auth';
 
 export default defineEventHandler(
   authMiddleware(async event => {

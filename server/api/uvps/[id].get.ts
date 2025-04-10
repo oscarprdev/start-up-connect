@@ -3,6 +3,10 @@ import { dafosTable, uvpsTable } from '~~/server/db/schemas';
 import { db } from '~~/server/db';
 import { eq } from 'drizzle-orm';
 import { simpleUVPSchema } from './types';
+import { useOpenAI } from '~~/server/shared/use-openai';
+import { validateResponse } from '~~/server/shared/validate-response';
+import { authMiddleware } from '~~/server/shared/auth';
+import { getIdea } from '~~/server/shared/get-idea';
 
 export default defineEventHandler(
   authMiddleware(async event => {

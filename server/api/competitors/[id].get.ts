@@ -2,8 +2,10 @@ import { db } from '~~/server/db';
 import type { Competitor } from '~~/server/db/schemas';
 import { competitorDTO, competitorsTable } from '~~/server/db/schemas';
 import { eq } from 'drizzle-orm';
-import { validateResponse } from '~~/server/utils/validate-response';
-import { usePerplexity } from '~~/server/utils/use-perplexity';
+import { validateResponse } from '~~/server/shared/validate-response';
+import { usePerplexity } from '~~/server/shared/use-perplexity';
+import { authMiddleware } from '~~/server/shared/auth';
+import { getIdea } from '~~/server/shared/get-idea';
 
 export default defineEventHandler(
   authMiddleware(async event => {

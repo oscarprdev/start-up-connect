@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { db } from '~~/server/db';
 import { uvpsTable, uvpsDTO } from '~~/server/db/schemas';
+import { authMiddleware } from '~~/server/shared/auth';
+import { validateResponse } from '~~/server/shared/validate-response';
 
 const bodyShema = z.object({
   text: z.string(),

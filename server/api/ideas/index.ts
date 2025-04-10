@@ -1,7 +1,8 @@
 import { ideasTable, ideaDTO } from '~~/server/db/schemas';
 import { eq } from 'drizzle-orm';
 import { db } from '~~/server/db';
-import { validateResponse } from '~~/server/utils/validate-response';
+import { validateResponse } from '~~/server/shared/validate-response';
+import { authMiddleware } from '~~/server/shared/auth';
 
 export default defineEventHandler(
   authMiddleware(async event => {
