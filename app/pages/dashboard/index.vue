@@ -26,7 +26,7 @@ const formStateSchema = z.object({
 });
 type FormState = z.infer<typeof formStateSchema>;
 
-await useFetch('/api/ideas/list', {
+await useFetch('/api/ideas', {
   headers: {
     Authorization: `Bearer ${session?.access_token}`,
     RefreshToken: session?.refresh_token,

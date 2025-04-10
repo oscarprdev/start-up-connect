@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CompetitorsCard from '~/components/dashboard/ideaView/CompetitorsCard.vue';
 import DafosCard from '~/components/dashboard/ideaView/DafosCard.vue';
-
+import UVPSCard from '~/components/dashboard/ideaView/UVPSCard.vue';
 const { id } = useRoute().params as { id: string };
 
 const supabase = useSupabaseClient();
@@ -17,6 +17,9 @@ const {
       :idea-id="id"
       :user-access-token="session?.access_token" />
     <CompetitorsCard
+      :idea-id="id"
+      :user-access-token="session?.access_token" />
+    <UVPSCard
       :idea-id="id"
       :user-access-token="session?.access_token" />
   </div>

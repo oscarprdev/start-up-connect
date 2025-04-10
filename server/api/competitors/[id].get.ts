@@ -1,6 +1,6 @@
 import { db } from '~~/server/db';
-import type { Competitor, Idea } from '~~/server/db/schemas';
-import { competitorDTO, competitorsTable, ideasTable } from '~~/server/db/schemas';
+import type { Competitor } from '~~/server/db/schemas';
+import { competitorDTO, competitorsTable } from '~~/server/db/schemas';
 import { eq } from 'drizzle-orm';
 import { validateResponse } from '~~/server/utils/validate-response';
 import { usePerplexity } from '~~/server/utils/use-perplexity';
@@ -40,9 +40,4 @@ const getCompetitors = async (ideaId: string): Promise<Competitor> => {
     .from(competitorsTable)
     .where(eq(competitorsTable.ideaId, ideaId));
   return competitors;
-};
-
-const getIdea = async (ideaId: string): Promise<Idea> => {
-  const [idea] = await db.select().from(ideasTable).where(eq(ideasTable.id, ideaId));
-  return idea;
 };
