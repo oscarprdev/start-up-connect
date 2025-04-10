@@ -50,7 +50,7 @@ export const competitorsTable = pgTable('competitors', {
     .notNull()
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  analisys: text('analisys').notNull(),
+  analysis: text('analysis').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   ideaId: varchar('idea_id', { length: 255 })
@@ -216,7 +216,7 @@ export const dafoDTO = z.object({
 
 export const competitorDTO = z.object({
   id: z.string(),
-  analisys: z.string(),
+  analysis: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

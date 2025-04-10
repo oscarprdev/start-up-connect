@@ -11,7 +11,7 @@ export default defineEventHandler(
     const competitors = await getCompetitors(id);
     if (competitors) {
       const validResponse = validateResponse(competitors, competitorDTO);
-      return validResponse.analisys;
+      return validResponse.analysis;
     }
 
     const idea = await getIdea(id);

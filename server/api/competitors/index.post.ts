@@ -5,22 +5,22 @@ import { validateResponse } from '~~/server/utils/validate-response';
 
 const bodySchema = z.object({
   ideaId: z.string(),
-  analisys: z.string(),
+  analysis: z.string(),
 });
 
 export default defineEventHandler(
   authMiddleware(async event => {
-    const { analisys, ideaId } = await readValidatedBody(event, bodySchema.parse);
-    const response = await storeCompetitor({ ideaId, analisys });
+    const { analysis, ideaId } = await readValidatedBody(event, bodySchema.parse);
+    const response = await storeCompetitor({ ideaId, analysis });
     return validateResponse(response, competitorDTO);
   })
 );
 
-const storeCompetitor = async ({ ideaId, analisys }: { ideaId: string; analisys: string }) => {
+const storeCompetitor = async ({ ideaId, analysis }: { ideaId: string; analysis: string }) => {
   const [competitor] = await db
     .insert(competitorsTable)
     .values({
-      analisys,
+      analysis,
       ideaId,
     })
     .returning();

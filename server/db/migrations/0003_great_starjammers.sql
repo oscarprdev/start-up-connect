@@ -1,0 +1,1 @@
+ALTER TABLE "competitors" RENAME COLUMN "analisys" TO "analysis";

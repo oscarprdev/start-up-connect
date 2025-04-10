@@ -70,12 +70,17 @@ const createNewIdea = async ({ title, description }: { title: string; descriptio
 <template>
   <main class="w-full h-full flex flex-col items-center">
     <h1>Dashboard</h1>
-    <ul v-if="data?.ideas?.length > 0">
+    <ul
+      v-if="data?.ideas?.length > 0"
+      class="flex flex-col gap-4">
       <li
         v-for="idea in data.ideas"
-        :key="idea.id">
-        <h2>{{ idea.title }}</h2>
-        <p>{{ idea.description }}</p>
+        :key="idea.id"
+        class="flex flex-col gap-2 p-4 border border-gray-200 rounded-md">
+        <NuxtLink :to="`/dashboard/${idea.id}`">
+          <h2>{{ idea.title }}</h2>
+          <p>{{ idea.description }}</p>
+        </NuxtLink>
       </li>
     </ul>
     <p v-else>No ideas yet</p>

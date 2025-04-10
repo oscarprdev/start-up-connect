@@ -13,20 +13,35 @@ export default defineEventHandler(
     const idea = await getIdea(event);
     const currentDAFO = await getCurrentDAFO(idea);
     if (currentDAFO) {
-      return validateResponse(currentDAFO, dafoDTO);
+      return {
+        alreadyExists: true,
+        dafo: validateResponse(currentDAFO, dafoDTO),
+      };
     }
 
     const dafo = await useOpenAI<SimpleDAFOSchema>({
       schema: simpleDAFOSchema,
-      prompt: `Generate a DAFO for the following idea: ${idea.description}`,
+      prompt: `You are an expert business consultant.
+        Generate a SWOT analysis for the following business idea: ${idea.description}. 
+        Every field should be composed of at least 3-5 sentences.`,
     });
 
-    return validateResponse(dafo, simpleDAFOSchema);
+    return {
+      alreadyExists: false,
+      dafo: validateResponse(dafo, simpleDAFOSchema),
+    };
   })
 );
 
 const getIdea = async (event: H3Event<EventHandlerRequest>) => {
-  const { id } = getRouterParams(event);
+  const id = getRouterParam(event, 'id');
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Idea ID is required',
+    });
+  }
+
   const [idea] = await db.select().from(ideasTable).where(eq(ideasTable.id, id));
   if (!idea) {
     throw createError({
