@@ -8,6 +8,7 @@ const {
 } = await supabase.auth.getSession();
 
 await useFetch(`/api/dafos/${id}`, {
+  lazy: true,
   headers: {
     Authorization: `Bearer ${session?.access_token}`,
   },
@@ -22,7 +23,7 @@ await useFetch(`/api/dafos/${id}`, {
       },
       body: JSON.stringify({
         ideaId: id,
-        dafo: _data,
+        dafo: _data.dafo,
       }),
       onResponseError: () => {
         toast.showToast('Failed to store dafos', ToastType.Error);
@@ -34,7 +35,36 @@ await useFetch(`/api/dafos/${id}`, {
   },
 });
 
-const { data } = useNuxtData('dafos');
+await useFetch(`/api/competitors/${id}`, {
+  lazy: true,
+  headers: {
+    Authorization: `Bearer ${session?.access_token}`,
+  },
+  key: 'competitors',
+  onResponse: async ({ response: { _data } }) => {
+    if (_data.alreadyExists) return;
+
+    await $fetch('/api/competitors', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({
+        ideaId: id,
+        analysis: _data.competitors,
+      }),
+      onResponseError: () => {
+        toast.showToast('Failed to store competitors', ToastType.Error);
+      },
+    });
+  },
+  onResponseError: () => {
+    toast.showToast('Failed to get competitors', ToastType.Error);
+  },
+});
+
+const { data: dafos } = useNuxtData('dafos');
+const { data: competitors } = useNuxtData('competitors');
 </script>
 
 <template>
@@ -42,8 +72,13 @@ const { data } = useNuxtData('dafos');
     <h1 v-if="id">Dashboard {{ id }}</h1>
     <div>
       <p>dafos</p>
-      <p v-if="data">{{ data }}</p>
+      <p v-if="dafos">{{ dafos }}</p>
       <p v-else>Loading dafos...</p>
+    </div>
+    <div>
+      <p>competitors</p>
+      <p v-if="competitors">{{ competitors }}</p>
+      <p v-else>Loading competitors...</p>
     </div>
   </div>
 </template>

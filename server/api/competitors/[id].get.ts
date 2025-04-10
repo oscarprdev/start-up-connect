@@ -7,17 +7,30 @@ import { usePerplexity } from '~~/server/utils/use-perplexity';
 
 export default defineEventHandler(
   authMiddleware(async event => {
-    const { id } = getRouterParams(event);
+    const id = getRouterParam(event, 'id');
+    if (!id) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Idea ID is required',
+      });
+    }
+
     const competitors = await getCompetitors(id);
     if (competitors) {
       const validResponse = validateResponse(competitors, competitorDTO);
-      return validResponse.analysis;
+      return {
+        alreadyExists: true,
+        competitors: validResponse.analysis,
+      };
     }
 
     const idea = await getIdea(id);
     const competitorsResponse = await usePerplexity({ ideaDescription: idea.description });
 
-    return competitorsResponse;
+    return {
+      alreadyExists: false,
+      competitors: competitorsResponse,
+    };
   })
 );
 
