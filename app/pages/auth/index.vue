@@ -2,7 +2,7 @@
 import { Loader } from 'lucide-vue-next';
 import { z } from 'zod';
 import { ButtonSize, ButtonVariant } from '~/components/ui/Button/button.types';
-import Label from '~/components/Label/Label.vue';
+import Label from '~/components/ui/Label/Label.vue';
 import Button from '~/components/ui/Button/Button.vue';
 import Input from '~/components/ui/Input/Input.vue';
 import { InputVariant } from '~/components/ui/Input/input.types';

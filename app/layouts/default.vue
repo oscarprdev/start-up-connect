@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Toast from '~/components/Toast/Toast.vue';
-import Header from '~/components/Header/Header.vue';
+import Toast from '~/components/ui/Toast/Toast.vue';
+import Header from '~/components/ui/Header/Header.vue';
 </script>
 
 <template>
