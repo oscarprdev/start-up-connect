@@ -22,7 +22,7 @@ export const useOpenAI = async <T>({ schema, prompt }: UseOpenAIProps): Promise<
   });
 
   const { object } = await generateObject({
-    model: openai.responses('gpt-4o'),
+    model: openai.responses('gpt-4o-mini'),
     schema,
     prompt,
   });
