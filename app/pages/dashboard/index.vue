@@ -70,6 +70,7 @@ const createNewIdea = async ({ title, description }: { title: string; descriptio
 <template>
   <main class="w-full h-full flex flex-col items-center">
     <h1>Dashboard</h1>
+    <p v-if="data?.statusMessage">{{ data.statusMessage }}</p>
     <ul
       v-if="data?.ideas?.length > 0"
       class="flex flex-col gap-4">

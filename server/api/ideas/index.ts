@@ -1,16 +1,15 @@
-import { ideasTable, ideaDTO } from '~~/server/infra/db/schemas';
-import { eq } from 'drizzle-orm';
-import { db } from '~~/server/infra/db';
-import { validateResponse } from '~~/server/shared/validate-response';
 import { authMiddleware } from '~~/server/shared/auth';
+import { listIdeasUsecase } from '~~/server/application/ideas/list-ideas.use-case';
 
 export default defineEventHandler(
   authMiddleware(async event => {
     try {
-      const ideas = await getIdeas(event.context.user.id);
+      const userId = event.context.user.id;
+      const ideas = await listIdeasUsecase.execute({ userId });
 
       return {
-        ideas: ideas.length > 0 ? ideas.map(idea => validateResponse(idea, ideaDTO)) : [],
+        statusMessage: 'Ideas listed successfully',
+        ideas,
       };
     } catch {
       return createError({
@@ -20,8 +19,3 @@ export default defineEventHandler(
     }
   })
 );
-
-const getIdeas = async (userId: string) => {
-  const ideas = await db.select().from(ideasTable).where(eq(ideasTable.userId, userId));
-  return ideas;
-};

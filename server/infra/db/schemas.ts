@@ -180,7 +180,6 @@ export type Idea = typeof ideasTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
 
 export const validateUser = (user: User) => userDTO.safeParse(user);
-export const validateIdea = (idea: Idea) => ideaDTO.safeParse(idea);
 export const validateDafos = (dafos: Dafos) => dafoDTO.safeParse(dafos);
 export const validateCompetitor = (competitor: Competitor) => competitorDTO.safeParse(competitor);
 export const validateUvps = (uvps: Uvps) => uvpsDTO.safeParse(uvps);
@@ -192,14 +191,6 @@ export const userDTO = z.object({
   username: z.string(),
   email: z.string(),
   image: z.string().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-
-export const ideaDTO = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -254,7 +245,6 @@ export const roadmapDTO = z.object({
 });
 
 export type UserDTO = z.infer<typeof userDTO>;
-export type IdeaDTO = z.infer<typeof ideaDTO>;
 export type DafosDTO = z.infer<typeof dafoDTO>;
 export type CompetitorDTO = z.infer<typeof competitorDTO>;
 export type UvpsDTO = z.infer<typeof uvpsDTO>;
