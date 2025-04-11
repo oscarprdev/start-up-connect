@@ -1,6 +1,6 @@
-import type { Dafos, Idea, Uvps } from '~~/server/db/schemas';
-import { dafosTable, uvpsTable } from '~~/server/db/schemas';
-import { db } from '~~/server/db';
+import type { Dafos, Idea, Uvps } from '~~/server/infra/db/schemas';
+import { dafosTable, uvpsTable } from '~~/server/infra/db/schemas';
+import { db } from '~~/server/infra/db';
 import { eq } from 'drizzle-orm';
 import { simpleUVPSchema } from './types';
 import { useOpenAI } from '~~/server/shared/use-openai';

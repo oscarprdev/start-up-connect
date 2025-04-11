@@ -1,6 +1,6 @@
-import { competitorDTO, competitorsTable } from '~~/server/db/schemas';
+import { competitorDTO, competitorsTable } from '~~/server/infra/db/schemas';
 import { z } from 'zod';
-import { db } from '~~/server/db';
+import { db } from '~~/server/infra/db';
 import { validateResponse } from '~~/server/shared/validate-response';
 import { authMiddleware } from '~~/server/shared/auth';
 

@@ -1,9 +1,9 @@
-import { db } from '~~/server/db';
+import { db } from '~~/server/infra/db';
 import type { SimpleDAFOSchema } from './types';
 import { simpleDAFOSchema } from './types';
 import { z } from 'zod';
-import type { Dafos } from '~~/server/db/schemas';
-import { dafosTable, dafoDTO } from '~~/server/db/schemas';
+import type { Dafos } from '~~/server/infra/db/schemas';
+import { dafosTable, dafoDTO } from '~~/server/infra/db/schemas';
 import { validateResponse } from '~~/server/shared/validate-response';
 import { authMiddleware } from '~~/server/shared/auth';
 

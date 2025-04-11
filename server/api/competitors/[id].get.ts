@@ -1,6 +1,6 @@
-import { db } from '~~/server/db';
-import type { Competitor } from '~~/server/db/schemas';
-import { competitorDTO, competitorsTable } from '~~/server/db/schemas';
+import { db } from '~~/server/infra/db';
+import type { Competitor } from '~~/server/infra/db/schemas';
+import { competitorDTO, competitorsTable } from '~~/server/infra/db/schemas';
 import { eq } from 'drizzle-orm';
 import { validateResponse } from '~~/server/shared/validate-response';
 import { usePerplexity } from '~~/server/shared/use-perplexity';

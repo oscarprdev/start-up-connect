@@ -1,4 +1,4 @@
-import { supabase } from '../db';
+import { supabase } from '../infra/db';
 import type { H3Event, EventHandler, EventHandlerRequest } from 'h3';
 
 export const authMiddleware = <T extends EventHandlerRequest>(

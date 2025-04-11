@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { db } from '~~/server/db';
-import type { BuyerPersona, Dafos } from '~~/server/db/schemas';
-import { buyerPersonasTable, dafosTable } from '~~/server/db/schemas';
+import { db } from '~~/server/infra/db';
+import type { BuyerPersona, Dafos } from '~~/server/infra/db/schemas';
+import { buyerPersonasTable, dafosTable } from '~~/server/infra/db/schemas';
 import { authMiddleware } from '~~/server/shared/auth';
 import { getIdea } from '~~/server/shared/get-idea';
 import type { SimpleBuyerPersonaSchema } from './types';

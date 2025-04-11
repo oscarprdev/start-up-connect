@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
 import type { H3Event, EventHandlerRequest } from 'h3';
-import { usersTable } from '~~/server/db/schemas';
-import { db } from '~~/server/db';
+import { usersTable } from '~~/server/infra/db/schemas';
+import { db } from '~~/server/infra/db';
 import { eq } from 'drizzle-orm';
 
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);

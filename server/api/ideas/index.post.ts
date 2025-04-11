@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { db } from '~~/server/db';
-import type { Idea } from '~~/server/db/schemas';
-import { ideaDTO, ideasTable } from '~~/server/db/schemas';
+import { db } from '~~/server/infra/db';
+import type { Idea } from '~~/server/infra/db/schemas';
+import { ideaDTO, ideasTable } from '~~/server/infra/db/schemas';
 import { authMiddleware } from '~~/server/shared/auth';
 import { validateResponse } from '~~/server/shared/validate-response';
 

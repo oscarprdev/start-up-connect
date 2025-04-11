@@ -1,6 +1,6 @@
-import { db } from '~~/server/db';
-import type { Dafos, Idea } from '~~/server/db/schemas';
-import { dafoDTO, dafosTable } from '~~/server/db/schemas';
+import { db } from '~~/server/infra/db';
+import type { Dafos, Idea } from '~~/server/infra/db/schemas';
+import { dafoDTO, dafosTable } from '~~/server/infra/db/schemas';
 import { eq } from 'drizzle-orm';
 import type { SimpleDAFOSchema } from './types';
 import { simpleDAFOSchema } from './types';

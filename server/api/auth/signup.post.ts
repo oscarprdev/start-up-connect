@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { usersTable } from '~~/server/db/schemas';
-import { db, supabase } from '~~/server/db';
+import { usersTable } from '~~/server/infra/db/schemas';
+import { db, supabase } from '~~/server/infra/db';
 import type { H3Event, EventHandlerRequest } from 'h3';
 import { eq, or } from 'drizzle-orm';
 

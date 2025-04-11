@@ -1,6 +1,6 @@
-import { ideasTable, ideaDTO } from '~~/server/db/schemas';
+import { ideasTable, ideaDTO } from '~~/server/infra/db/schemas';
 import { eq } from 'drizzle-orm';
-import { db } from '~~/server/db';
+import { db } from '~~/server/infra/db';
 import { validateResponse } from '~~/server/shared/validate-response';
 import { authMiddleware } from '~~/server/shared/auth';
 
