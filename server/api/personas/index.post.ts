@@ -1,8 +1,6 @@
 import { z } from 'zod';
-import { db } from '~~/server/infra/db';
-import { buyerPersonaDTO, buyerPersonasTable } from '~~/server/infra/db/schemas';
 import { authMiddleware } from '~~/server/shared/auth';
-import { validateResponse } from '~~/server/shared/validate-response';
+import { createPersonasUseCase } from '~~/server/application/personas/create-personas.use-case';
 
 const bodySchema = z.object({
   ideaId: z.string(),
@@ -13,20 +11,10 @@ export default defineEventHandler(
   authMiddleware(async event => {
     const { ideaId, description } = await readValidatedBody(event, bodySchema.parse);
 
-    const persona = await storeBuyerPersona({ ideaId, description });
+    await createPersonasUseCase.execute({ ideaId, description });
 
-    return validateResponse(persona, buyerPersonaDTO);
+    return {
+      statusMessage: 'Persona created successfully',
+    };
   })
 );
-
-const storeBuyerPersona = async ({
-  ideaId,
-  description,
-}: {
-  ideaId: string;
-  description: string;
-}) => {
-  const [persona] = await db.insert(buyerPersonasTable).values({ ideaId, description }).returning();
-
-  return persona;
-};

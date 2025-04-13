@@ -1,13 +1,11 @@
-import { eq } from 'drizzle-orm';
-import { db } from '~~/server/infra/db';
-import type { BuyerPersona, Dafos } from '~~/server/infra/db/schemas';
-import { buyerPersonasTable, dafosTable } from '~~/server/infra/db/schemas';
 import { authMiddleware } from '~~/server/shared/auth';
-import { getIdea } from '~~/server/shared/get-idea';
 import type { SimpleBuyerPersonaSchema } from './types';
 import { simpleBuyerPersonaSchema } from './types';
 import { useOpenAI } from '~~/server/shared/use-openai';
 import { validateResponse } from '~~/server/shared/validate-response';
+import { describePersonasUseCase } from '~~/server/application/personas/describe-personas.use-case';
+import { describeDafosUseCase } from '~~/server/application/dafos/describe-dafos.use-case';
+import { describeIdeasUseCase } from '~~/server/application/ideas/describe-ideas.use-case';
 
 export default defineEventHandler(
   authMiddleware(async event => {
@@ -19,7 +17,7 @@ export default defineEventHandler(
       });
     }
 
-    const persona = await getBuyerPersonas(id);
+    const persona = await describePersonasUseCase.execute({ ideaId: id });
     if (persona) {
       return {
         alreadyExists: true,
@@ -29,8 +27,21 @@ export default defineEventHandler(
       };
     }
 
-    const idea = await getIdea(id);
-    const dafo = await getDAFO(idea.id);
+    const idea = await describeIdeasUseCase.execute({ ideaId: id });
+    if (!idea) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Idea not found',
+      });
+    }
+
+    const dafo = await describeDafosUseCase.execute({ ideaId: idea.id });
+    if (!dafo) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'DAFO not found for this idea',
+      });
+    }
 
     const personaResponse = await useOpenAI<SimpleBuyerPersonaSchema>({
       schema: simpleBuyerPersonaSchema,
@@ -52,13 +63,3 @@ export default defineEventHandler(
     };
   })
 );
-
-const getBuyerPersonas = async (id: string): Promise<BuyerPersona> => {
-  const [persona] = await db.select().from(buyerPersonasTable).where(eq(buyerPersonasTable.id, id));
-  return persona;
-};
-
-const getDAFO = async (ideaId: string): Promise<Dafos> => {
-  const [dafo] = await db.select().from(dafosTable).where(eq(dafosTable.ideaId, ideaId));
-  return dafo;
-};
