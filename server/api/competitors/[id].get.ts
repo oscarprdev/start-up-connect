@@ -1,11 +1,7 @@
-import { db } from '~~/server/infra/db';
-import type { Competitor } from '~~/server/infra/db/schemas';
-import { competitorDTO, competitorsTable } from '~~/server/infra/db/schemas';
-import { eq } from 'drizzle-orm';
-import { validateResponse } from '~~/server/shared/validate-response';
 import { usePerplexity } from '~~/server/shared/use-perplexity';
 import { authMiddleware } from '~~/server/shared/auth';
-import { getIdea } from '~~/server/shared/get-idea';
+import { describeCompetitorsUseCase } from '~~/server/application/competitors/describe-competitors.use-case';
+import { describeIdeasUseCase } from '~~/server/application/ideas/describe-ideas.use-case';
 
 export default defineEventHandler(
   authMiddleware(async event => {
@@ -17,16 +13,23 @@ export default defineEventHandler(
       });
     }
 
-    const competitors = await getCompetitors(id);
-    if (competitors) {
-      const validResponse = validateResponse(competitors, competitorDTO);
+    const competitor = await describeCompetitorsUseCase.execute({ ideaId: id });
+    if (competitor) {
       return {
         alreadyExists: true,
-        competitors: validResponse.analysis,
+        competitors: competitor.analysis,
       };
     }
 
-    const idea = await getIdea(id);
+    const idea = await describeIdeasUseCase.execute({ ideaId: id });
+
+    if (!idea) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Idea not found',
+      });
+    }
+
     const competitorsResponse = await usePerplexity({ ideaDescription: idea.description });
 
     return {
@@ -35,11 +38,3 @@ export default defineEventHandler(
     };
   })
 );
-
-const getCompetitors = async (ideaId: string): Promise<Competitor> => {
-  const [competitors] = await db
-    .select()
-    .from(competitorsTable)
-    .where(eq(competitorsTable.ideaId, ideaId));
-  return competitors;
-};
