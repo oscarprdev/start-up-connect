@@ -1,16 +1,6 @@
 import { z } from 'zod';
-import { ideaDTO } from '~~/server/domain/ideas/ideas.schemas';
-import { db } from '~~/server/infra/db';
-import type { Idea } from '~~/server/infra/db/schemas';
-import { ideasTable } from '~~/server/infra/db/schemas';
+import { createIdeasUseCase } from '~~/server/application/ideas/create-ideas.use-case';
 import { authMiddleware } from '~~/server/shared/auth';
-import { validateResponse } from '~~/server/shared/validate-response';
-
-interface StoreIdeaParams {
-  title: string;
-  description: string;
-  userId: string;
-}
 
 const bodySchema = z.object({
   title: z.string(),
@@ -20,20 +10,11 @@ const bodySchema = z.object({
 export default defineEventHandler(
   authMiddleware(async event => {
     const { title, description } = await readValidatedBody(event, bodySchema.parse);
-    const idea = await storeIdea({ title, description, userId: event.context.user.id });
+    const userId = event.context.user.id;
+    await createIdeasUseCase.execute({ title, description, userId });
 
-    return validateResponse(idea, ideaDTO);
+    return {
+      statusMessage: 'Idea created successfully',
+    };
   })
 );
-
-const storeIdea = async ({ title, description, userId }: StoreIdeaParams): Promise<Idea> => {
-  const [idea] = await db
-    .insert(ideasTable)
-    .values({
-      title,
-      description,
-      userId,
-    })
-    .returning();
-  return idea;
-};

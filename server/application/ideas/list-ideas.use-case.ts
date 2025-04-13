@@ -1,16 +1,17 @@
 import { IdeasEntity, type IIdeasEntity } from '~~/server/domain/ideas/ideas.entity';
 import type { IdeaDTO } from '~~/server/domain/ideas/ideas.schemas';
+import type { ListIdeasParams } from '~~/server/domain/ideas/ideas.repository';
 import { IdeasInfra } from '~~/server/infra/ideas/ideas.infra';
 
 interface IListIdeasUsecase {
-  execute({ userId }: { userId: string }): Promise<IdeaDTO[]>;
+  execute(params: ListIdeasParams): Promise<IdeaDTO[]>;
 }
 
 class ListIdeasUsecase implements IListIdeasUsecase {
   constructor(private readonly ideas: IIdeasEntity) {}
 
-  async execute({ userId }: { userId: string }): Promise<IdeaDTO[]> {
-    const ideas = await this.ideas.list({ userId });
+  async execute(params: ListIdeasParams): Promise<IdeaDTO[]> {
+    const ideas = await this.ideas.list(params);
     return ideas;
   }
 }
