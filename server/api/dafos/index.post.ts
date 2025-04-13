@@ -1,11 +1,7 @@
-import { db } from '~~/server/infra/db';
-import type { SimpleDAFOSchema } from './types';
 import { simpleDAFOSchema } from './types';
 import { z } from 'zod';
-import type { Dafos } from '~~/server/infra/db/schemas';
-import { dafosTable, dafoDTO } from '~~/server/infra/db/schemas';
-import { validateResponse } from '~~/server/shared/validate-response';
 import { authMiddleware } from '~~/server/shared/auth';
+import { createDafosUseCase } from '~~/server/application/dafos/create-dafos.use-case';
 
 const bodyShema = z.object({
   dafo: simpleDAFOSchema,
@@ -15,22 +11,16 @@ const bodyShema = z.object({
 export default defineEventHandler(
   authMiddleware(async event => {
     const { dafo, ideaId } = await readValidatedBody(event, bodyShema.parse);
-    const response = await storeDAFO(dafo, ideaId);
-
-    return validateResponse(response, dafoDTO);
-  })
-);
-
-const storeDAFO = async (dafo: SimpleDAFOSchema, ideaId: string): Promise<Dafos> => {
-  const [dafos] = await db
-    .insert(dafosTable)
-    .values({
+    await createDafosUseCase.execute({
+      ideaId,
       strengths: dafo.strengths,
       weaknesses: dafo.weaknesses,
       opportunities: dafo.opportunities,
       threats: dafo.threats,
-      ideaId,
-    })
-    .returning();
-  return dafos;
-};
+    });
+
+    return {
+      statusMessage: 'DAFO created successfully',
+    };
+  })
+);
