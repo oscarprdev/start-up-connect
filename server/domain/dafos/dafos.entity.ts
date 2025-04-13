@@ -5,6 +5,7 @@ import type {
   IDafosRepository,
 } from './dafos.repository';
 import { dafoDTO, type DafosDTO } from './dafos.schemas';
+import { DafosInfra } from '~~/server/infra/dafos/dafos.infra';
 
 export interface IDafosEntity {
   describe(params: DescribeDafosUseCaseParams): Promise<DafosDTO | null>;
@@ -24,3 +25,6 @@ export class DafosEntity implements IDafosEntity {
     return validateResponse(dafos, dafoDTO);
   }
 }
+
+const dafosInfra = new DafosInfra();
+export const dafosEntity = new DafosEntity(dafosInfra);

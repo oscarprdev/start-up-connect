@@ -17,4 +17,6 @@ export const dafoDTO = z.object({
   weaknesses: z.string(),
   opportunities: z.string(),
   threats: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });

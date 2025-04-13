@@ -24,7 +24,7 @@ export default defineEventHandler(
         statusMessage: 'Idea not found',
       });
     }
-    const currentDAFO = await describeDafosUseCase.execute({ ideaId: id });
+    const currentDAFO = await describeDafosUseCase.execute({ ideaId: idea.id });
     if (currentDAFO) {
       return {
         alreadyExists: true,
