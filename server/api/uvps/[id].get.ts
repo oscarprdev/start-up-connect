@@ -1,12 +1,10 @@
-import type { Dafos, Idea, Uvps } from '~~/server/infra/db/schemas';
-import { dafosTable, uvpsTable } from '~~/server/infra/db/schemas';
-import { db } from '~~/server/infra/db';
-import { eq } from 'drizzle-orm';
 import { simpleUVPSchema } from './types';
 import { useOpenAI } from '~~/server/shared/use-openai';
 import { validateResponse } from '~~/server/shared/validate-response';
 import { authMiddleware } from '~~/server/shared/auth';
-import { getIdea } from '~~/server/shared/get-idea';
+import { describeUvpsUseCase } from '~~/server/application/uvps/describe-uvps.use-case';
+import { describeIdeasUseCase } from '~~/server/application/ideas/describe-ideas.use-case';
+import { describeDafosUseCase } from '~~/server/application/dafos/describe-dafos.use-case';
 
 export default defineEventHandler(
   authMiddleware(async event => {
@@ -17,18 +15,32 @@ export default defineEventHandler(
         statusMessage: 'Idea ID is required',
       });
     }
-    const currentUVPS = await getUVPS(id);
-    if (currentUVPS) {
+
+    const uvp = await describeUvpsUseCase.execute({ ideaId: id });
+    if (uvp) {
       return {
         alreadyExists: true,
         uvps: {
-          text: currentUVPS.text,
+          text: uvp.text,
         },
       };
     }
 
-    const idea = await getIdea(id);
-    const dafo = await getDAFO(idea);
+    const idea = await describeIdeasUseCase.execute({ ideaId: id });
+    if (!idea) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Idea not found',
+      });
+    }
+
+    const dafo = await describeDafosUseCase.execute({ ideaId: idea.id });
+    if (!dafo) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'DAFO not found for this idea',
+      });
+    }
 
     const response = await useOpenAI({
       schema: simpleUVPSchema,
@@ -51,13 +63,3 @@ export default defineEventHandler(
     };
   })
 );
-
-const getUVPS = async (ideaId: string): Promise<Uvps> => {
-  const [uvp] = await db.select().from(uvpsTable).where(eq(uvpsTable.ideaId, ideaId));
-  return uvp;
-};
-
-const getDAFO = async (idea: Idea): Promise<Dafos> => {
-  const [dafo] = await db.select().from(dafosTable).where(eq(dafosTable.ideaId, idea.id));
-  return dafo;
-};
