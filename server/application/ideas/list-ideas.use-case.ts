@@ -1,7 +1,6 @@
-import { IdeasEntity, type IIdeasEntity } from '~~/server/domain/ideas/ideas.entity';
+import { ideasEntity, type IIdeasEntity } from '~~/server/domain/ideas/ideas.entity';
 import type { IdeaDTO } from '~~/server/domain/ideas/ideas.schemas';
 import type { ListIdeasParams } from '~~/server/domain/ideas/ideas.repository';
-import { IdeasInfra } from '~~/server/infra/ideas/ideas.infra';
 
 interface IListIdeasUsecase {
   execute(params: ListIdeasParams): Promise<IdeaDTO[]>;
@@ -16,6 +15,4 @@ class ListIdeasUsecase implements IListIdeasUsecase {
   }
 }
 
-const ideasInfra = new IdeasInfra();
-const ideasEntity = new IdeasEntity(ideasInfra);
 export const listIdeasUsecase = new ListIdeasUsecase(ideasEntity);

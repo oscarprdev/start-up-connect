@@ -1,7 +1,12 @@
-import type { Dafos } from '~~/server/infra/db/schemas';
+import type { DafosDTO } from '~~/server/domain/dafos/dafos.schemas';
 
 export interface IDafosRepository {
-  create(params: CreateDafosUseCaseParams): Promise<Dafos>;
+  describe(params: DescribeDafosUseCaseParams): Promise<DafosDTO | null>;
+  create(params: CreateDafosUseCaseParams): Promise<DafosDTO>;
+}
+
+export interface DescribeDafosUseCaseParams {
+  ideaId: string;
 }
 
 export interface CreateDafosUseCaseParams {

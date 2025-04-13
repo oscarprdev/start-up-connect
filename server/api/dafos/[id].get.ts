@@ -1,13 +1,11 @@
-import { db } from '~~/server/infra/db';
-import type { Dafos, Idea } from '~~/server/infra/db/schemas';
-import { dafoDTO, dafosTable } from '~~/server/infra/db/schemas';
-import { eq } from 'drizzle-orm';
+import { dafoDTO } from '~~/server/infra/db/schemas';
 import type { SimpleDAFOSchema } from './types';
 import { simpleDAFOSchema } from './types';
 import { validateResponse } from '~~/server/shared/validate-response';
 import { useOpenAI } from '~~/server/shared/use-openai';
-import { getIdea } from '~~/server/shared/get-idea';
 import { authMiddleware } from '~~/server/shared/auth';
+import { describeIdeasUseCase } from '~~/server/application/ideas/describe-ideas.use-case';
+import { describeDafosUseCase } from '~~/server/application/dafos/describe-dafos.use-case';
 
 export default defineEventHandler(
   authMiddleware(async event => {
@@ -19,8 +17,14 @@ export default defineEventHandler(
       });
     }
 
-    const idea = await getIdea(id);
-    const currentDAFO = await getCurrentDAFO(idea);
+    const idea = await describeIdeasUseCase.execute({ ideaId: id });
+    if (!idea) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Idea not found',
+      });
+    }
+    const currentDAFO = await describeDafosUseCase.execute({ ideaId: id });
     if (currentDAFO) {
       return {
         alreadyExists: true,
@@ -41,8 +45,3 @@ export default defineEventHandler(
     };
   })
 );
-
-const getCurrentDAFO = async (idea: Idea): Promise<Dafos | null> => {
-  const [dafo] = await db.select().from(dafosTable).where(eq(dafosTable.ideaId, idea.id));
-  return dafo;
-};
