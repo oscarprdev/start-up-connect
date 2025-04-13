@@ -22,7 +22,6 @@ export default defineEventHandler(
     }
 
     const idea = await describeIdeasUseCase.execute({ ideaId: id });
-
     if (!idea) {
       throw createError({
         statusCode: 404,
