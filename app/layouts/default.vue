@@ -4,7 +4,7 @@ import Header from '~/components/ui/Header/Header.vue';
 </script>
 
 <template>
-  <main class="h-screen w-screen">
+  <main class="h-screen w-screen bg-background">
     <Header />
     <slot />
     <Toast />

@@ -14,7 +14,7 @@ const isDafosGenerated = ref(false);
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col gap-4 h-full">
     <h1 v-if="id">Dashboard {{ id }}</h1>
     <DafosCard
       :idea-id="id"
