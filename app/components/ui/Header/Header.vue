@@ -9,7 +9,7 @@ const logout = async () => {
 </script>
 
 <template>
-  <header class="fixed flex justify-between items-center px-[0.9rem] py-2 z-50 w-screen">
+  <header class="flex justify-between items-center px-[0.9rem] py-2 z-50 w-screen">
     <div class="w-5 h-5 rounded-full bg-accent" />
 
     <button

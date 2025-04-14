@@ -9,6 +9,8 @@ const supabase = useSupabaseClient();
 const {
   data: { session },
 } = await supabase.auth.getSession();
+
+const isDafosGenerated = ref(false);
 </script>
 
 <template>
@@ -16,15 +18,19 @@ const {
     <h1 v-if="id">Dashboard {{ id }}</h1>
     <DafosCard
       :idea-id="id"
-      :user-access-token="session?.access_token" />
+      :user-access-token="session?.access_token"
+      @dafos-generated="isDafosGenerated = true" />
     <CompetitorsCard
       :idea-id="id"
       :user-access-token="session?.access_token" />
     <UVPSCard
+      v-if="isDafosGenerated"
       :idea-id="id"
       :user-access-token="session?.access_token" />
     <PersonaCard
+      v-if="isDafosGenerated"
       :idea-id="id"
-      :user-access-token="session?.access_token" />
+      :user-access-token="session?.access_token"
+      :is-dafos-generated="isDafosGenerated" />
   </div>
 </template>

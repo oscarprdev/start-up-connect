@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Modal from '~/components/ui/Modal/Modal.vue';
 const props = defineProps<{
   ideaId: string;
   userAccessToken: string;
@@ -7,7 +8,7 @@ const props = defineProps<{
 const COMPONENT_KEY = 'personas';
 const toast = useToast();
 
-await useFetch(`/api/${COMPONENT_KEY}/${props.ideaId}`, {
+const { status } = await useFetch(`/api/${COMPONENT_KEY}/${props.ideaId}`, {
   lazy: true,
   headers: {
     Authorization: `Bearer ${props.userAccessToken}`,
@@ -39,9 +40,17 @@ const { data } = useNuxtData(COMPONENT_KEY);
 </script>
 
 <template>
-  <div>
-    <p>buyer persona</p>
-    <p v-if="data">{{ data }}</p>
-    <p v-else>Loading buyer persona...</p>
-  </div>
+  <Modal
+    id="persona"
+    title="Buyer Persona">
+    <template #trigger>
+      <div class="flex items-center justify-center p-5 border border-border rounded-md">
+        <p>Buyer Persona</p>
+      </div>
+    </template>
+    <template #content>
+      <p v-if="data">{{ data }}</p>
+      <p v-if="status === 'pending'">Loading buyer persona...</p>
+    </template>
+  </Modal>
 </template>

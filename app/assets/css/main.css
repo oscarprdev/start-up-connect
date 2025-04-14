@@ -123,3 +123,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+dialog {
+  --animation-duration: 0.2s;
+
+  transition:
+    display var(--animation-duration) allow-discrete,
+    overlay var(--animation-duration) allow-discrete;
+
+  animation: close var(--animation-duration) forwards;
+  &[open] {
+    animation: open var(--animation-duration) forwards;
+  }
+}
+
+@keyframes open {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes close {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
