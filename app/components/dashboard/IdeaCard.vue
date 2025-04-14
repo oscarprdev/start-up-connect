@@ -17,7 +17,7 @@ defineProps<{
       <p class="text-sm text-gray-500 text-ellipsis max-h-[50px]">{{ description }}</p>
       <NuxtLink
         :to="`/dashboard/${id}`"
-        class="text-sm ml-auto mt-auto text-indigo-500 hover:text-indigo-600">
+        class="text-sm ml-auto mt-auto text-accent hover:text-accent/80 duration-300">
         See more
       </NuxtLink>
     </div>

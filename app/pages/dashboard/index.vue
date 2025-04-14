@@ -39,7 +39,7 @@ const refreshIdeas = () => {
 </script>
 
 <template>
-  <section class="relative w-full h-full bg-background p-5 flex flex-col gap-4">
+  <section class="relative w-full h-full bg-background px-5 py-3 flex flex-col gap-5">
     <h1 class="text-2xl font-bold text-foreground/80">Dashboard</h1>
     <div class="flex flex-wrap gap-4 w-full">
       <IdeaCard
@@ -58,7 +58,7 @@ const refreshIdeas = () => {
           type="button"
           :variant="ButtonVariant.DEFAULT"
           :size="ButtonSize.LARGE"
-          class="w-fit absolute top-5 right-5">
+          class="w-fit absolute top-3 right-5">
           Create Idea
         </Button>
       </template>
